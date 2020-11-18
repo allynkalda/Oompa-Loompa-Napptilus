@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getOompas } from '../api/api'
 import { setCachedData, getCachedData } from '../storage/storage'
-import Header from '../components/Header';
 import GridBox from '../components/GridBox';
+import Search from '../components/Search';
 
 export default function Landing() {
     const [ oompas, setOompas ] = useState([])
@@ -25,7 +25,7 @@ export default function Landing() {
     console.log(oompas)
     return (
         <div>
-            <Header />
+            <Search />
             <GridBox oompas={oompas}/>
         </div>
     )
