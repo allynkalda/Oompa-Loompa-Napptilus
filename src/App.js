@@ -1,6 +1,5 @@
 import './App.css';
 import Landing from './pages/Landing';
-import Header from './components/Header';
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,7 +13,6 @@ function App() {
     <div className="App">
       <StateProvider>
         <Router>
-          <Header />
           <Switch>
             <Route exact path="/">
               <Landing />

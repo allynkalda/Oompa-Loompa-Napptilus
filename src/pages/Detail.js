@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStateValue } from '../state/state';
 import { Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { getOneOompa } from '../api/api'
+import { useLocation } from 'react-router-dom';
+import { setCachedOompa, getCachedOompa } from '../storage/storage'
+import Header from '../components/Header';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,22 +25,46 @@ const useStyles = makeStyles((theme) => ({
         paddingTop: '20px'
     }
   }));
+
 export default function Detail() {
     const classes = useStyles();
-    const [{ oompa }] = useStateValue();
+    const location = useLocation();
+    const [ chosenOompa, setChosenOompa ] = useState({});
+    const [ , dispatch ] = useStateValue();
+    useEffect(() => {
+        const id = location.pathname.split('/')[1];
+        if (!getCachedOompa(id)) {
+            getOneOompa(id)
+            .then(result => {
+                setCachedOompa(result.data, id);
+                setChosenOompa(result.data);
+            })
+            .catch(err => console.log(err))
+        } else {
+            const cachedData = getCachedOompa(id);
+            setChosenOompa(cachedData);
+        }
+        dispatch({ type: 'set_oompa', oompa: chosenOompa});
+    }, [])
+
     return (
+        <>
+        <Header />
         <Grid container className={classes.root}>
             <Grid item md={6}>
-                <img alt="oompa" src={oompa.image} className={classes.image} />
+                <img alt="oompa" src={chosenOompa.image} className={classes.image} />
             </Grid>
             <Grid item md={6}>
-                <div className={classes.text}>
-            <Typography variant="h5">{oompa.first_name} {oompa.last_name}</Typography>
-            <Typography variant="body1">{oompa.gender === 'F' ? 'Woman' : 'Man'}</Typography>
-            <Typography variant="body1">{oompa.profession}</Typography>
-            <Typography variant="body1" className={classes.top}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</Typography>
+            <div className={classes.text}>
+                <Typography variant="h5">{chosenOompa.first_name} {chosenOompa.last_name}</Typography>
+                <Typography variant="body1">{chosenOompa.gender === 'F' ? 'Woman' : 'Man'}</Typography>
+                <Typography variant="body1">{chosenOompa.profession}</Typography>
+                <div className={classes.top}>
+                    <div dangerouslySetInnerHTML={{ __html: chosenOompa.description }} />
                 </div>
+            </div>
             </Grid>
         </Grid>
+        </>
     )
 }

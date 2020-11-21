@@ -27,9 +27,14 @@ export default function Search({ onClick }) {
     const handleSearchInput = event => {
       setSearchInput(event.target.value);
     };
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter'){
+            onClick(searchInput);
+      }
+    };
     return (
         <div className={classes.search}>
-            <TextField className={classes.field} id="outlined-basic" label="Search" variant="outlined" size="small" onChange={handleSearchInput}/>
+            <TextField className={classes.field} id="search" label="Search" variant="outlined" size="small" onChange={handleSearchInput} onKeyPress={handleKeyPress}/>
             <IconButton color="primary" variant="contained" onClick={() => onClick(searchInput)}>
                 <img src="https://s3.eu-central-1.amazonaws.com/napptilus/level-test/imgs/ic_search.png" 
                     alt="search-button"

@@ -16,7 +16,7 @@ export default function GridBox({ oompas }) {
         if (oompas.length) {
             const card = oompas.map(item => {
                 return (
-                    <Grid item size={4}>
+                    <Grid key={item.id} item size={4}>
                         <Cards oompa={item}/>
                     </Grid>
                 )
